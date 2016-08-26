@@ -142,7 +142,7 @@ def train(outdir):
     for i in range(FLAGS.iterations):
 
         ''' Fetch sample '''
-        I = random.sample(range(1, n), FLAGS.batch_size)
+        I = random.sample(range(0, n), FLAGS.batch_size)
         x_batch = x_all[I,:]
         t_batch = t_all[I]
         y_batch = y_f_all[I]
