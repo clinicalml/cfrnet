@@ -28,6 +28,15 @@ class cfr_net:
         self.h_rep          The layer of the penalized representation
         """
 
+        self.x = x
+        self.t = t
+        self.y_ = y_
+        self.p = p
+        self.r_alpha = r_alpha
+        self.r_lambda = r_lambda
+        self.do_in = do_in
+        self.do_out = do_out
+
         dim_input = dims[0]
         dim_in = dims[1]
         dim_out = dims[2]
@@ -44,6 +53,10 @@ class cfr_net:
             dim_in = dim_input
         if n_out == 0:
             dim_out = dim_in+1
+
+        if FLAGS.batch_norm:
+            bn_biases = []
+            bn_scales = []
 
         ''' Construct input/representation layers '''
         h_in = [x]
@@ -63,7 +76,15 @@ class cfr_net:
                 h_in.append(tf.mul(h_in[i],weights_in[i]))
             else:
                 biases_in.append(tf.Variable(tf.random_normal([1,dim_in], stddev=weight_init)))
-                h_in.append(tf.nn.relu(tf.matmul(h_in[i],weights_in[i])+biases_in[i]))
+                z = tf.matmul(h_in[i], weights_in[i]) + biases_in[i]
+
+                if FLAGS.batch_norm:
+                    batch_mean, batch_var = tf.nn.moments(z, [0])
+                    bn_biases.append(tf.Variable(tf.ones([dim_in])))
+                    bn_scales.append(tf.Variable(tf.ones([dim_in])))
+                    z = tf.nn.batch_normalization(z, batch_mean, batch_var, bn_biases[-1], bn_scales[-1], 1e-3)
+
+                h_in.append(tf.nn.relu(z))
                 h_in[i+1] = tf.nn.dropout(h_in[i+1], do_in)
 
         h_rep = h_in[len(h_in)-1]
@@ -76,7 +97,9 @@ class cfr_net:
             else:
                 weights_out.append(tf.Variable(tf.random_normal([dim_out,dim_out], stddev=weight_init)))
             biases_out.append(tf.Variable(tf.random_normal([1,dim_out], stddev=weight_init)))
-            h_out.append(tf.nn.relu(tf.matmul(h_out[i],weights_out[i])+biases_out[i]))
+            z = tf.matmul(h_out[i], weights_out[i]) + biases_out[i]
+            
+            h_out.append(tf.nn.relu(z))
             h_out[i+1] = tf.nn.dropout(h_out[i+1], do_out)
 
         weights_pred = tf.Variable(tf.random_normal([dim_out,1], stddev=weight_init))
@@ -115,19 +138,26 @@ class cfr_net:
 
         ''' Imbalance error '''
         if FLAGS.imb_fun == 'mmd2_rbf':
-            imb_error = r_alpha*mmd2_rbf(h_rep,t,p,sig)
+            imb_dist = mmd2_rbf(h_rep,t,p,sig)
+            imb_error = r_alpha*imb_dist
         elif FLAGS.imb_fun == 'mmd2_lin':
+            imb_dist = mmd2_lin(h_rep,t,p)
             imb_error = r_alpha*mmd2_lin(h_rep,t,p)
         elif FLAGS.imb_fun == 'mmd_rbf':
-            imb_error = tf.sqrt(SQRT_CONST + tf.square(r_alpha)*tf.abs(mmd2_rbf(h_rep,t,p,sig)))
+            imb_dist = tf.abs(mmd2_rbf(h_rep,t,p,sig))
+            imb_error = tf.sqrt(SQRT_CONST + tf.square(r_alpha)*imb_dist)
         elif FLAGS.imb_fun == 'mmd_lin':
-            imb_error = tf.sqrt(SQRT_CONST + tf.square(r_alpha)*mmd2_lin(h_rep,t,p))
+            imb_dist = mmd2_lin(h_rep,t,p)
+            imb_error = tf.sqrt(SQRT_CONST + tf.square(r_alpha)*imb_dist)
         elif FLAGS.imb_fun == 'wass':
-            imb_error = r_alpha * wasserstein(h_rep,t,p,lam=FLAGS.wass_lambda,its=FLAGS.wass_iterations,sq=False,backpropT=FLAGS.wass_bpt)
+            imb_dist = wasserstein(h_rep,t,p,lam=FLAGS.wass_lambda,its=FLAGS.wass_iterations,sq=False,backpropT=FLAGS.wass_bpt)
+            imb_error = r_alpha * imb_dist
         elif FLAGS.imb_fun == 'wass2':
-            imb_error = r_alpha * wasserstein(h_rep,t,p,lam=FLAGS.wass_lambda,its=FLAGS.wass_iterations,sq=True,backpropT=FLAGS.wass_bpt)
+            imb_dist = wasserstein(h_rep,t,p,lam=FLAGS.wass_lambda,its=FLAGS.wass_iterations,sq=True,backpropT=FLAGS.wass_bpt)
+            imb_error = r_alpha * imb_dist
         else:
-            imb_error = r_alpha * lindisc(h_rep,p,t)
+            imb_dist = lindisc(h_rep,p,t)
+            imb_error = r_alpha * imb_dist
 
         ''' Total error '''
         tot_error = risk
@@ -141,14 +171,12 @@ class cfr_net:
         self.output = y
         self.tot_loss = tot_error
         self.imb_loss = imb_error
+        self.imb_dist = imb_dist
         self.pred_loss = pred_error
         self.weights_in = weights_in
         self.weights_out = weights_out
         self.weights_pred = weights_pred
         self.h_rep = h_rep
-
-def pehe(y_pred, y_true):
-    return tf.sqrt(tf.reduce_mean(tf.square(y_ - y)))
 
 def lindisc(X,p,t):
     ''' Linear MMD '''
