@@ -49,7 +49,7 @@ Usage:
 python evaluate.py <config_file> [overwrite] [filters]
 ```
 
-The parameter _config_file_ should be the same as the one used in cfr_param_search.
+The parameter _config_file_ should be the same as the one used in cfr_param_search. (Note: evaluate only uses the settings for dataform, data_test, datadir and outdir, the rest can be changed without affecting the evaluation.)
 
 If the _overwrite_ parameter is set to "1", the script re-computes all error estimates. If it is set to "0" it re-uses stored values, but re-prints and re-plots all results.
 
