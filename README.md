@@ -7,6 +7,9 @@ The core components of cfrnet, i.e. the TensorFlow graph, is contained in cfr/cf
 
 A typical experiment uses cfr_param_search.py and evaluate.py as sub-routines. cfr_param_search is best used to randomly search the parameter space. In the output directory, it creates a log of which configurations have been used so far, so that the same experiment is not repeated. evaluate.py goes through the predictions produced by the model and evaluates the error.
 
+## cfr_param_search
+Usage: 
+
 # Examples
 
 A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt.
