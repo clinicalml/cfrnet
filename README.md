@@ -8,7 +8,52 @@ The core components of cfrnet, i.e. the TensorFlow graph, is contained in cfr/cf
 A typical experiment uses cfr_param_search.py and evaluate.py as sub-routines. cfr_param_search is best used to randomly search the parameter space. In the output directory, it creates a log of which configurations have been used so far, so that the same experiment is not repeated. evaluate.py goes through the predictions produced by the model and evaluates the error.
 
 ## cfr_param_search
-Usage: 
+
+The script _cfr_param_search.py_ runs a random hyperparameter search given a configuration file.
+
+Usage:
+
+```
+python cfr_param_search.py <config_file> <num_runs>
+```
+The _config_file_ argument should contain the path to a text file where each line is a key-value pair for a CFR parameter.
+
+The _num_run_ argument should contain an integer to indicate how many parameter settings should be sampled. If all possible configurations should be used, this can be set arbitrarily high as the script will terminate when all have been used.
+
+Example configuration file (from configs/example_ihdp.txt):
+
+```
+p_alpha=[0, 1e-1]
+p_lambda=[1e-3]
+n_in=[2]
+n_out=[2]
+dropout_in=1.0
+...
+```
+
+Note that some of the lines have square brackets to indicate lists. If a parameter list contains more than a single element, cfr_param_search will sample uniformly from these values. In this way, random parameter search can be performed.
+
+## evaluate
+
+The script _evaluate.py_ performs an evaluation of a trained model based on the predictions made for the training and test sets.
+
+Usage:
+
+```
+python evaluate.py <config_file> [overwrite] [filters]
+```
+
+The parameter _config_file_ should be the same as the one used in cfr_param_search.
+
+If the _overwrite_ parameter is set to "1", the script re-computes all error estimates. If it is set to "0" it re-uses stored values, but re-prints and re-plots all results.
+
+The argument _filters_ accepts a string in the form of a python dict containing values of the parameters the used wishes to filter. This produces plots and text summaries only of results corresponding to configuration that matches the filter.
+
+Example:
+
+```
+python evaluate.py configs/example_ihdp.txt 0 "{p_alpha: 0}"
+```
 
 # Examples
 
