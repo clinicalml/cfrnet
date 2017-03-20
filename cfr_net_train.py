@@ -158,8 +158,8 @@ def train(CFR, sess, train_step, D, I_valid, D_test, logfile, i_exp):
                 valid_obj, valid_f_error, valid_imb = sess.run([CFR.tot_loss, CFR.pred_loss, CFR.imb_dist], feed_dict=dict_valid)
 
             losses.append([obj_loss, f_error, cf_error, imb_err, valid_f_error, valid_imb, valid_obj])
-            loss_str = str(i) + '\tObj: %.3f,\tF: %.3f,\tCf: %.3f,\tImb: %.1g,\tVal: %.3f,\tValImb: %.1g,\tValObj: %.2f,\tRepNrm: %.3f' \
-                        % (obj_loss, f_error, cf_error, imb_err, valid_f_error, valid_imb, valid_obj, rep_norm)
+            loss_str = str(i) + '\tObj: %.3f,\tF: %.3f,\tCf: %.3f,\tImb: %.2g,\tVal: %.3f,\tValImb: %.2g,\tValObj: %.2f' \
+                        % (obj_loss, f_error, cf_error, imb_err, valid_f_error, valid_imb, valid_obj)
 
             if FLAGS.loss == 'log':
                 y_pred = sess.run(CFR.output, feed_dict={CFR.x: x_batch, \

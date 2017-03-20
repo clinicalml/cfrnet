@@ -26,49 +26,29 @@ def sort_by_config(results, configs, key):
 
     return results, configs_sorted
 
-def evaluate(path, dataset, overwrite=False, filters=None):
-    if not os.path.isdir(path):
-        raise Exception('Could not find output at path: %s' % path)
+def load_config(config_file):
+    with open(config_file, 'r') as f:
+        cfg = [l.split('=') for l in f.read().split('\n') if '=' in l]
+        cfg = dict([(kv[0], eval(kv[1])) for kv in cfg])
+    return cfg
 
-    output_dir = path
+def evaluate(config_file, overwrite=False, filters=None):
 
-    if dataset==1:
-        data_train = '../data/LaLonde/jobs_dw_bin.train.npz'
-        data_test = '../data/LaLonde/jobs_dw_bin.test.npz'
-        binary = True
-    elif dataset==2:
-        data_train = '../data/LaLonde/jobs_dw_bin.new.10.train.npz'
-        data_test = '../data/LaLonde/jobs_dw_bin.new.10.test.npz'
-        binary = True
-    elif dataset==3:
-        data_train = '../data/LaLonde/jobs_DW_bin.bias.married.10.train.npz'
-        data_test = '../data/LaLonde/jobs_DW_bin.bias.married.10.test.npz'
-        binary = True
-    elif dataset==4:
-        data_train = '../data/LaLonde/jobs_DW_bin.bias.nodegr.10.train.npz'
-        data_test = '../data/LaLonde/jobs_DW_bin.bias.nodegr.10.test.npz'
-        binary = True
-    elif dataset==5:
-        data_train = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_1_1-500.npz'
-        data_test = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_1_1-500.npz'
-        binary = False
-    elif dataset==6:
-        data_train = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_2_1-500.npz'
-        data_test = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_2_1-500.npz'
-        binary = False
-    elif dataset==7:
-        data_train = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_3_1-500.npz'
-        data_test = '../data/ihdp/ihdp_imb/ihdp_imb_p0_400_3_1-500.npz'
-        binary = False
-    elif dataset==8:
-        data_train = '../data/LaLonde/jobs_DW_bin.bias.nodegr.25.train.npz'
-        data_test = '../data/LaLonde/jobs_DW_bin.bias.nodegr.25.test.npz'
-        binary = True
-    else:
-        data_train = '../data/ihdp/ihdp_npci_1-1000.train.npz'
-        data_test = '../data/ihdp/ihdp_npci_1-1000.test.npz'
-        binary = False
+    if not os.path.isfile(config_file):
+        raise Exception('Could not find config file at path: %s' % config_file)
 
+    cfg = load_config(config_file)
+
+    output_dir = cfg['outdir']
+
+    if not os.path.isdir(output_dir):
+        raise Exception('Could not find output at path: %s' % output_dir)
+
+    data_train = cfg['datadir']+'/'+cfg['dataform']
+    data_test = cfg['datadir']+'/'+cfg['data_test']
+    binary = False
+    if cfg['loss'] == 'log':
+        binary = True
 
     # Evaluate results
     eval_path = '%s/evaluation.npz' % output_dir
@@ -101,17 +81,17 @@ def evaluate(path, dataset, overwrite=False, filters=None):
     #    plot_cfr_evaluation_cont(eval_results, configs, output_dir)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print 'Usage: python evaluate.py <output folder> <dataset> <overwrite> <filters (optional)>'
+    if len(sys.argv) < 2:
+        print 'Usage: python evaluate.py <config_file> <overwrite (default 0)> <filters (optional)>'
     else:
-        dataset = int(sys.argv[2])
+        config_file = sys.argv[1]
 
         overwrite = False
-        if len(sys.argv)>3 and sys.argv[3] == '1':
+        if len(sys.argv)>2 and sys.argv[2] == '1':
             overwrite = True
 
         filters = None
-        if len(sys.argv)>4:
-            filters = eval(sys.argv[4])
+        if len(sys.argv)>3:
+            filters = eval(sys.argv[3])
 
-        evaluate(sys.argv[1], dataset, overwrite, filters=filters)
+        evaluate(config_file, overwrite, filters=filters)
