@@ -77,6 +77,6 @@ def run(cfg_file, num_runs):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print 'Usage: python evaluate.py <config file> <num runs>'
+        print 'Usage: python cfr_param_search.py <config file> <num runs>'
     else:
         run(sys.argv[1], int(sys.argv[2]))
