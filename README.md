@@ -9,7 +9,7 @@ A typical experiment uses cfr_param_search.py and evaluate.py as sub-routines. c
 
 # Examples
 
-A simple experiment example is contained in example_ihdp.sh. This file runs the model on the IHDP data with parameters supplied by configs/example_ihdp.txt.
+A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt.
 
 # References
 Uri Shalit, Fredrik D. Johansson & David Sontag. [Estimating individual treatment effect: generalization bounds and algorithms] (https://arxiv.org/abs/1606.03976), arXiv:1606.03976 Preprint, 2016
