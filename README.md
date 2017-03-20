@@ -18,7 +18,13 @@ python cfr_param_search.py <config_file> <num_runs>
 ```
 The _config_file_ argument should contain the path to a text file where each line is a key-value pair for a CFR parameter.
 
-The _num_run_ argument should contain an integer to indicate how many parameter settings should be sampled. If all possible configurations should be used, this can be set arbitrarily high as the script will terminate when all have been used.
+The _num_run_ argument should contain an integer to indicate how many parameter settings should be sampled. If all possible configurations should be used, this can be set arbitrarily high as the script will terminate when all have been used. If the number of possible settings is vast, a smaller value for _num_runs_ may be appropriate.
+
+Example:
+
+```
+python evaluate.py configs/example_ihdp.txt 10
+```
 
 Example configuration file (from configs/example_ihdp.txt):
 
