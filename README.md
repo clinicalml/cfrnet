@@ -63,7 +63,7 @@ python evaluate.py configs/example_ihdp.txt 0 "{p_alpha: 0}"
 
 # Examples
 
-A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt.
+A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt. The data for this example can be downloaded from http://www.mit.edu/~fredrikj/files/ihdp_100.tar.gz.
 
 # References
 Uri Shalit, Fredrik D. Johansson & David Sontag. [Estimating individual treatment effect: generalization bounds and algorithms](https://arxiv.org/abs/1606.03976), 34th International Conference on Machine Learning (ICML), August 2017.
