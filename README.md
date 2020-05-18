@@ -63,7 +63,7 @@ python evaluate.py configs/example_ihdp.txt 0 "{p_alpha: 0}"
 
 # Examples
 
-A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt. The data for this example can be downloaded from http://www.mit.edu/~fredrikj/files/ihdp_100.tar.gz.
+A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt. The data for this example can be downloaded from http://www.fredjo.com/files/ihdp_npci_1-100.train.npz (train) and http://www.fredjo.com/files/ihdp_npci_1-100.test.npz (test). For the full data used in the ICML 2017 paper, please visit https://www.fredjo.com/.
 
 # References
 Uri Shalit, Fredrik D. Johansson & David Sontag. [Estimating individual treatment effect: generalization bounds and algorithms](https://arxiv.org/abs/1606.03976), 34th International Conference on Machine Learning (ICML), August 2017.
