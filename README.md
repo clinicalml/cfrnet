@@ -63,7 +63,12 @@ python evaluate.py configs/example_ihdp.txt 0 "{p_alpha: 0}"
 
 # Examples
 
-A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt. The data for this example can be downloaded from http://www.fredjo.com/files/ihdp_npci_1-100.train.npz (train) and http://www.fredjo.com/files/ihdp_npci_1-100.test.npz (test). For the full data used in the ICML 2017 paper, please visit https://www.fredjo.com/.
+A simple experiment example is contained in example_ihdp.sh. This file runs the model on (a subset of) the IHDP data with parameters supplied by configs/example_ihdp.txt. The data for this example can be downloaded from http://www.fredjo.com/files/ihdp_npci_1-100.train.npz (train) and http://www.fredjo.com/files/ihdp_npci_1-100.test.npz (test). For the full data (of 1000 replications) used in the ICML 2017 paper, please visit https://www.fredjo.com/.
+
+# FAQ
+
+* Q: **What are the hyperparameters used on IHDP in the ICML 2017 paper?** A: The parameters were those given in example_ihdp.txt but with p_alpha = 0.3
+* Q: **I don't get the same IHDP results as in the paper when I try to replicate with the IHDP example from Github.** A: The ICML 2017 results were computed over the full set of 1000 replications. The Github IHDP example uses only 100 examples as it is meant to serve as a quick demo. Please find the 1000 replications at https://www.fredjo.com/. 
 
 # References
 Uri Shalit, Fredrik D. Johansson & David Sontag. [Estimating individual treatment effect: generalization bounds and algorithms](https://arxiv.org/abs/1606.03976), 34th International Conference on Machine Learning (ICML), August 2017.
