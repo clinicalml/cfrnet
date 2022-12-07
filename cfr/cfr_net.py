@@ -145,8 +145,9 @@ class cfr_net(object):
 
         ''' Construct factual loss function '''
         if FLAGS.loss == 'l1':
-            risk = tf.reduce_mean(sample_weight*tf.abs(y_-y))
-            pred_error = -tf.reduce_mean(res)
+            res = sample_weight*tf.abs(y_-y)
+            risk = tf.reduce_mean(res)
+            pred_error = tf.reduce_mean(res)
         elif FLAGS.loss == 'log':
             y = 0.995/(1.0+tf.exp(-y)) + 0.0025
             res = y_*tf.log(y) + (1.0-y_)*tf.log(1.0-y)
