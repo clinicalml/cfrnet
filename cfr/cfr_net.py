@@ -136,7 +136,7 @@ class cfr_net(object):
         ''' Compute sample reweighting '''
         if FLAGS.reweight_sample:
             w_t = t/(2*p_t)
-            w_c = (1-t)/(2*1-p_t)
+            w_c = (1-t)/(2*(1-p_t))
             sample_weight = w_t + w_c
         else:
             sample_weight = 1.0
